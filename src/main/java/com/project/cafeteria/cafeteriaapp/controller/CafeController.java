@@ -1,5 +1,10 @@
 package com.project.cafeteria.cafeteriaapp.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.project.cafeteria.cafeteriaapp.entity.Cafe;
 import com.project.cafeteria.cafeteriaapp.service.CafeService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/menu")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CafeController {
 
     private final CafeService cafeService;

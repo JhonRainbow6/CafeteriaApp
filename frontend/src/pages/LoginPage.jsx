@@ -20,7 +20,7 @@ function LoginPage() {
 
       <div className="flex flex-col space-y-6 md:w-1/3 w-3/4 bg-white p-10 rounded-2xl shadow-lg border border-amber-100">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/cliente")}
           className="bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
         >
           👩‍🎓 Entrar como Cliente
