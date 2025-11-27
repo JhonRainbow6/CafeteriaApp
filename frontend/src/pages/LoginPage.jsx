@@ -1,35 +1,70 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const role = location.state?.role || "desconocido";
+
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
+
+  const submit = () => {
+    if (email === "" || pass === "") {
+      toast.error("Completa todos los campos");
+      return;
+    }
+
+    if (email === "admin@cafe.com" && pass === "1234") {
+      localStorage.setItem("userRole", role);
+      toast.success("Bienvenido!");
+
+      if (role === "cliente") navigate("/cliente");
+      else navigate("/barista");
+
+    } else {
+      toast.error("Credenciales incorrectas");
+    }
+  };
 
   return (
-    <div className="h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-br from-amber-100 to-yellow-50">
-      <div className="text-center md:w-1/2 p-8">
-        <h1 className="text-5xl font-extrabold text-amber-800 mb-4">
-          ☕ CafeteríaApp
-        </h1>
-        <p className="text-gray-700 text-lg mb-6">
-          Bienvenido al sistema de gestión de pedidos y menú.
-        </p>
-        <p className="text-gray-600">
-          Selecciona tu rol para continuar:
-        </p>
-      </div>
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-amber-100 to-yellow-50">
+      <div className="bg-white p-10 rounded-2xl shadow-xl w-96 border border-amber-100">
+        
+        <h2 className="text-center text-2xl font-bold text-amber-800 mb-6">
+          Iniciar sesión como {role}
+        </h2>
 
-      <div className="flex flex-col space-y-6 md:w-1/3 w-3/4 bg-white p-10 rounded-2xl shadow-lg border border-amber-100">
+        <input
+          type="email"
+          placeholder="Correo"
+          className="w-full p-3 mb-4 border rounded-lg"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Contraseña"
+          className="w-full p-3 mb-6 border rounded-lg"
+          value={pass}
+          onChange={(e) => setPass(e.target.value)}
+        />
+
         <button
-          onClick={() => navigate("/")}
-          className="bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
+          onClick={submit}
+          className="w-full bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
         >
-          👩‍🎓 Entrar como Cliente
+          Entrar
         </button>
+
         <button
-          onClick={() => navigate("/barista")}
-          className="bg-gray-700 hover:bg-gray-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
+          onClick={() => navigate("/role")}
+          className="w-full mt-4 underline text-amber-700"
         >
-          👨‍🍳 Entrar como Barista
+          Cambiar rol
         </button>
       </div>
     </div>
