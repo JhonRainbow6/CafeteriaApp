@@ -15,6 +15,8 @@ public class ItemOrderDTO {
     @Min(value = 1, message = "La cantidad debe ser al menos 1")
     private int cantidad;
 
+    public ItemOrderDTO() {}
+
     public ItemOrderDTO(Long cafeId, int cantidad) {
         this.cafeId = cafeId;
         this.cantidad = cantidad;
