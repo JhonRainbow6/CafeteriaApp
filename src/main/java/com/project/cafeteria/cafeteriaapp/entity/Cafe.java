@@ -13,6 +13,7 @@ public class Cafe {
     private String nombre;
     private double precio;
     private String ingredientes;
+    private String imagenUrl;
 
     public Cafe() {}
 
@@ -20,6 +21,13 @@ public class Cafe {
         this.nombre = nombre;
         this.precio = precio;
         this.ingredientes = ingredientes;
+    }
+
+    public Cafe(String nombre, double precio, String ingredientes, String imagenUrl) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.ingredientes = ingredientes;
+        this.imagenUrl = imagenUrl;
     }
 
     // metodos (Get,Set) de la clase Cafe
@@ -41,6 +49,14 @@ public class Cafe {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public String getImagenUrl(){
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl){
+        this.imagenUrl = imagenUrl;
     }
 
     public String getIngredientes() {

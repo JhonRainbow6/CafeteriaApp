@@ -36,7 +36,7 @@ function Cart({ cart, onClear, userEmail }) {
     try {
       const response = await apiClient.post("/orders", orderRequest);
       console.log("Pedido creado exitosamente:", response.data);
-      toast.success(`¡Pedido #${response.data.id} creado con éxito! 🎉`);
+      toast.success(`¡Pedido #${response.data.id} creado con éxito!`);
       onClear(); // vaciar carrito
     } catch (error) {
       console.error("=== ERROR AL ENVIAR PEDIDO ===");
@@ -62,7 +62,7 @@ function Cart({ cart, onClear, userEmail }) {
 
   return (
     <div className="bg-white p-5 rounded-2xl shadow-md border border-amber-100 mt-8">
-      <h3 className="text-2xl font-semibold text-amber-800 mb-4">🛒 Tu Carrito</h3>
+      <h3 className="text-2xl font-semibold text-amber-800 mb-4">Tu Carrito</h3>
       {cart.length === 0 ? (
         <p className="text-gray-500 text-center">Aún no hay cafés seleccionados.</p>
       ) : (

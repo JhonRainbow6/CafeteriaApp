@@ -63,16 +63,16 @@ function ClientePage() {
       <div className="bg-blue-50 p-4 rounded-lg">
         <h3 className="font-semibold text-blue-800 mb-2">Estado del Backend:</h3>
         {backendStatus === "checking" && (
-          <p className="text-blue-600">🔄 Verificando conexión...</p>
+          <p className="text-blue-600">Verificando conexión...</p>
         )}
         {backendStatus === "connected" && (
-          <p className="text-green-600">✅ Backend conectado correctamente</p>
+          <p className="text-green-600">Backend conectado</p>
         )}
         {backendStatus === "error" && (
-          <p className="text-orange-600">⚠️ Backend responde con errores</p>
+          <p className="text-orange-600">Backend responde con errores</p>
         )}
         {backendStatus === "disconnected" && (
-          <p className="text-red-600">❌ No se puede conectar al backend. ¿Está ejecutándose en el puerto 8080?</p>
+          <p className="text-red-600">No se puede conectar al backend.</p>
         )}
       </div>
 

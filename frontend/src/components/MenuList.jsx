@@ -54,31 +54,31 @@ function MenuList({ onAddToCart }) {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {menu.map((cafe) => (
-            <div
-              key={cafe.id}
-              className="bg-white shadow-md rounded-xl p-6 border border-amber-200 hover:shadow-lg transition"
-            >
-              <img
-                src={`https://source.unsplash.com/300x200/?coffee,${cafe.nombre}`}
-                alt={cafe.nombre}
-                className="rounded-lg mb-4 w-full h-40 object-cover"
-              />
-              <h3 className="text-xl font-semibold text-amber-800">
-                {cafe.nombre}
-              </h3>
-              <p className="text-gray-600 mb-2">${cafe.precio.toFixed(2)}</p>
-              {cafe.ingredientes && (
-                <p className="text-sm text-gray-500 italic mb-3">
-                  {cafe.ingredientes}
-                </p>
-              )}
-              <button
-                onClick={() => onAddToCart(cafe)}
-                className="w-full bg-amber-700 hover:bg-amber-800 text-white py-2 rounded-lg font-semibold transition"
+              <div
+                  key={cafe.id}
+                  className="bg-white shadow-md rounded-xl p-6 border border-amber-200 hover:shadow-lg transition"
               >
-                Agregar al carrito
-              </button>
-            </div>
+                <img
+                    src={cafe.imagenUrl || '/images/default-coffee.jpg'}
+                    alt={cafe.nombre}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                />
+                <h3 className="text-xl font-semibold text-amber-800">
+                  {cafe.nombre}
+                </h3>
+                <p className="text-gray-600 mb-2">${cafe.precio.toFixed(2)}</p>
+                {cafe.ingredientes && (
+                    <p className="text-sm text-gray-500 italic mb-3">
+                      {cafe.ingredientes}
+                    </p>
+                )}
+                <button
+                    onClick={() => onAddToCart(cafe)}
+                    className="w-full bg-amber-700 hover:bg-amber-800 text-white py-2 rounded-lg font-semibold transition"
+                >
+                  Agregar al carrito
+                </button>
+              </div>
           ))}
         </div>
       )}

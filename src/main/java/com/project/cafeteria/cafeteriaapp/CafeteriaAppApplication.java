@@ -21,20 +21,19 @@ public class CafeteriaAppApplication {
     @Bean
     public CommandLineRunner inicializarMenu(CafeRepository cafeRepository) {
         return args -> {
-            // Verificar si ya existen datos en la base de datos
-            if (cafeRepository.count() == 0) {
-                // objetos Cafe del menú inicial
-                List<Cafe> menuInicial = Arrays.asList(
-                        new Cafe("Espresso", 5000.00, "Café molido fino"),
-                        new Cafe("Americano", 6000.00, "Espresso, agua"),
-                        new Cafe("Cappuccino", 8500.00, "Espresso, leche, espuma de leche"),
-                        new Cafe("Latte", 9000.00, "Espresso, 2/3 más de leche"),
-                        new Cafe("Mocaccino", 10000.00, "Espresso, chocolate, leche, espuma de leche")
-                );
+            cafeRepository.deleteAll();
 
-                cafeRepository.saveAll(menuInicial);
-                System.out.println("--- MENU CARGADO EN LA BASE DE DATOS ---");
-            }
+            // objetos Cafe del menú inicial
+            List<Cafe> menuInicial = Arrays.asList(
+                    new Cafe("Espresso", 5000.00, "Café molido fino", "/images/espresso.png"),
+                    new Cafe("Americano", 6000.00, "Espresso, agua", "/images/americano.png"),
+                    new Cafe("Cappuccino", 8500.00, "Espresso, leche, espuma de leche", "/images/cappuccino.png"),
+                    new Cafe("Latte", 9000.00, "Espresso, 2/3 más de leche", "/images/latte.png"),
+                    new Cafe("Mocaccino", 10000.00, "Espresso, chocolate, leche, espuma de leche", "/images/mocca.png")
+            );
+
+            cafeRepository.saveAll(menuInicial);
+            System.out.println("--- MENU CARGADO EN LA BASE DE DATOS CON IMÁGENES ---");
         };
     }
 
