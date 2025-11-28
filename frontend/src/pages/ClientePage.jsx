@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import MenuList from "../components/MenuList";
 import Cart from "../components/Cart";
+import ClientNotifications from "../components/ClientNotifications";
 
 function ClientePage() {
   const [cart, setCart] = useState([]);
   const [backendStatus, setBackendStatus] = useState("checking");
 
+  // Obtener el email del usuario desde localStorage
+  const userEmail = localStorage.getItem("userEmail");
+
   React.useEffect(() => {
     console.log("ClientePage renderizada correctamente");
+    console.log("userEmail obtenido:", userEmail);
+    console.log("localStorage completo:", {
+      userEmail: localStorage.getItem("userEmail"),
+      userRole: localStorage.getItem("userRole"),
+      authToken: localStorage.getItem("authToken")
+    });
 
     // Probar conexión con el backend
     const testBackend = async () => {
@@ -66,8 +76,11 @@ function ClientePage() {
         )}
       </div>
 
+      {/* Sección de notificaciones de pedidos */}
+      {userEmail && <ClientNotifications userEmail={userEmail} />}
+
       <MenuList onAddToCart={handleAddToCart} />
-      <Cart cart={cart} onClear={handleClearCart} />
+      <Cart cart={cart} onClear={handleClearCart} userEmail={userEmail} />
     </div>
   );
 }

@@ -21,9 +21,14 @@ public class Order {
     // registra la fecha y hora del pedido
     private LocalDateTime fechaCreacion;
 
-    // relación con los items de la orden
+    // relacion con los items de la orden
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrderItem> items = new ArrayList<>();
+
+    // relación con el usuario que realizó la orden
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     // constructo vacio requerido por JPA
     public Order() {
@@ -70,7 +75,14 @@ public class Order {
         this.items = items;
     }
 
-    // Método auxiliar para agregar un item a la orden
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);

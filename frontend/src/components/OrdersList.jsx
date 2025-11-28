@@ -33,11 +33,11 @@ function OrdersList() {
       await apiClient.put(`/orders/${id}/state`, nuevoEstado, {
         headers: { "Content-Type": "application/json" },
       });
-      toast.success(`Estado cambiado a "${nuevoEstado}" ✅`);
+      toast.success(`Estado cambiado a "${nuevoEstado}"`);
       fetchOrders();
     } catch (err) {
       console.error("Error al actualizar estado:", err);
-      toast.error("Error al actualizar estado ❌");
+      toast.error("Error al actualizar estado");
     }
   };
 

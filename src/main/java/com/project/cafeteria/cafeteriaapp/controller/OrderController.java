@@ -1,5 +1,6 @@
 package com.project.cafeteria.cafeteriaapp.controller;
 
+import com.project.cafeteria.cafeteriaapp.dto.CreateOrderRequest;
 import com.project.cafeteria.cafeteriaapp.dto.ItemOrderDTO;
 import com.project.cafeteria.cafeteriaapp.dto.OrderResponseDTO;
 import com.project.cafeteria.cafeteriaapp.entity.Order;
@@ -20,17 +21,17 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    // [ENDPOINT CLIENTE] POST /api/ordenes: Realiza un nuevo pedido
+    // [ENDPOINT CLIENTE] POST /api/orders: Realiza un nuevo pedido
     @PostMapping
-    public ResponseEntity<Order> realizarPedido(@Valid @RequestBody List<ItemOrderDTO> items) {
+    public ResponseEntity<Order> realizarPedido(@Valid @RequestBody CreateOrderRequest request) {
         try {
-            if (items == null || items.isEmpty()) {
+            if (request.getItems() == null || request.getItems().isEmpty()) {
                 return new ResponseEntity(
                         "La lista de ítems del pedido no puede estar vacía.",
                         HttpStatus.BAD_REQUEST
                 );
             }
-            Order ordenCreada = orderService.crearOrden(items);
+            Order ordenCreada = orderService.crearOrden(request.getItems(), request.getUserEmail());
             return new ResponseEntity<>(ordenCreada, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -42,6 +43,17 @@ public class OrderController {
     public ResponseEntity<List<OrderResponseDTO>> obtenerTodasLasOrdenes() {
         List<OrderResponseDTO> ordenes = orderService.obtenerTodasLasOrdenes();
         return new ResponseEntity<>(ordenes, HttpStatus.OK);
+    }
+
+    // [ENDPOINT CLIENTE] GET /api/orders/user/{email}: Obtiene las órdenes de un usuario
+    @GetMapping("/user/{email}")
+    public ResponseEntity<List<OrderResponseDTO>> obtenerOrdenesPorUsuario(@PathVariable String email) {
+        try {
+            List<OrderResponseDTO> ordenes = orderService.obtenerOrdenesPorUsuario(email);
+            return new ResponseEntity<>(ordenes, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     // [ENDPOINT GERENTE/BARISTA] GET /api/orders/{id}: Obtiene una orden específica por ID

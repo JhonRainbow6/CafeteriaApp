@@ -5,13 +5,13 @@ const API_BASE_URL = 'http://localhost:8080/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // 10 segundos de timeout
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
-// Interceptor para agregar token de autenticación si existe
+// interceptor para agregar token de autenticacion
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');

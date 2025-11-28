@@ -2,7 +2,7 @@ import React from "react";
 import apiClient from "../services/api";
 import toast from "react-hot-toast";
 
-function Cart({ cart, onClear }) {
+function Cart({ cart, onClear, userEmail }) {
   const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
   const handleSubmitOrder = async () => {
@@ -11,29 +11,45 @@ function Cart({ cart, onClear }) {
       return;
     }
 
+    // Validar que el usuario esté autenticado
+    if (!userEmail) {
+      toast.error("Debes iniciar sesión para realizar un pedido.");
+      console.error("userEmail no encontrado en Cart");
+      return;
+    }
+
     const orderItems = cart.map((item) => ({
       cafeId: item.id,
       cantidad: item.cantidad,
     }));
 
-    console.log("Enviando pedido:", orderItems);
+    const orderRequest = {
+      items: orderItems,
+      userEmail: userEmail
+    };
+
+    console.log("=== ENVIANDO PEDIDO ===");
+    console.log("userEmail:", userEmail);
+    console.log("orderRequest completo:", JSON.stringify(orderRequest, null, 2));
     console.log("Items del carrito:", cart);
 
     try {
-      const response = await apiClient.post("/orders", orderItems);
+      const response = await apiClient.post("/orders", orderRequest);
       console.log("Pedido creado exitosamente:", response.data);
       toast.success(`¡Pedido #${response.data.id} creado con éxito! 🎉`);
       onClear(); // vaciar carrito
     } catch (error) {
-      console.error("Error detallado al enviar pedido:", {
-        error: error.message,
-        status: error.response?.status,
-        data: error.response?.data,
-        orderItems
-      });
+      console.error("=== ERROR AL ENVIAR PEDIDO ===");
+      console.error("Error message:", error.message);
+      console.error("Status:", error.response?.status);
+      console.error("Response data:", error.response?.data);
+      console.error("orderRequest enviado:", orderRequest);
 
       if (error.response?.status === 400) {
-        toast.error(`Error en el pedido: ${error.response.data}`);
+        const errorMsg = typeof error.response.data === 'string'
+          ? error.response.data
+          : JSON.stringify(error.response.data);
+        toast.error(`Error en el pedido: ${errorMsg}`);
       } else if (error.response?.status === 404) {
         toast.error("Servicio de pedidos no encontrado. Verifica que el backend esté ejecutándose.");
       } else if (error.code === 'ERR_NETWORK') {

@@ -27,19 +27,17 @@ function LoginPage() {
 
       const { email: userEmail, rol, token } = response.data;
 
-      // Verificar rol
+      // verificacion de rol
       if (rol.toLowerCase() !== role.toLowerCase()) {
         toast.error(`Este usuario no tiene permisos de ${role}`);
         setLoading(false);
         return;
       }
 
-      // Guardar en localStorage
       localStorage.setItem("userRole", rol);
       localStorage.setItem("userEmail", userEmail);
       localStorage.setItem("authToken", token);
 
-      // Verificar que se guardó correctamente
       const savedRole = localStorage.getItem("userRole");
       console.log("Login exitoso:", {
         rol,
@@ -55,7 +53,6 @@ function LoginPage() {
 
       toast.success("¡Bienvenido!");
 
-      // Navegación inmediata con replace para evitar problemas de historial
       if (role.toLowerCase() === "cliente") {
         console.log("Navegando a /cliente");
         navigate("/cliente", { replace: true });

@@ -5,10 +5,11 @@ import com.project.cafeteria.cafeteriaapp.dto.OrderItemDTO;
 import com.project.cafeteria.cafeteriaapp.dto.OrderResponseDTO;
 import com.project.cafeteria.cafeteriaapp.entity.Cafe;
 import com.project.cafeteria.cafeteriaapp.entity.Order;
-import com.project.cafeteria.cafeteriaapp.entity.OrderItem;
+import com.project.cafeteria.cafeteriaapp.entity.Usuario;
 import com.project.cafeteria.cafeteriaapp.exceptions.NotFoundException;
 import com.project.cafeteria.cafeteriaapp.repository.CafeRepository;
 import com.project.cafeteria.cafeteriaapp.repository.OrderRepository;
+import com.project.cafeteria.cafeteriaapp.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,18 +20,29 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CafeRepository cafeRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public OrderService(OrderRepository orderRepository, CafeRepository cafeRepository) {
+    public OrderService(OrderRepository orderRepository, CafeRepository cafeRepository, UsuarioRepository usuarioRepository) {
         this.orderRepository = orderRepository;
         this.cafeRepository = cafeRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public Order crearOrden(List<ItemOrderDTO> items) {
+    // Método para crear orden con usuario
+    public Order crearOrden(List<ItemOrderDTO> items, String userEmail) {
         System.out.println("=== CREANDO NUEVA ORDEN ===");
         System.out.println("Items recibidos: " + items.size());
+        System.out.println("Usuario: " + userEmail);
 
         double totalPedido = 0.0;
         Order nuevaOrden = new Order();
+
+        // Asociar usuario si se proporciona email
+        if (userEmail != null && !userEmail.isEmpty()) {
+            Usuario usuario = usuarioRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NotFoundException("Usuario con email " + userEmail + " no encontrado."));
+            nuevaOrden.setUsuario(usuario);
+        }
 
         for (ItemOrderDTO item : items) {
             System.out.println("Procesando item - CafeId: " + item.getCafeId() + ", Cantidad: " + item.getCantidad());
@@ -60,6 +72,11 @@ public class OrderService {
 
         return ordenGuardada;
     }
+
+    // Método legacy (sin usuario) - mantener compatibilidad
+    public Order crearOrden(List<ItemOrderDTO> items) {
+        return crearOrden(items, null);
+    }
     //obtencion de una orden por su ID
     public Order GetOrderById(Long id) {
         return orderRepository.findById(id)
@@ -77,6 +94,20 @@ public class OrderService {
     //obtencion de todas las ordenes del sistema
     public List<OrderResponseDTO> obtenerTodasLasOrdenes() {
         List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(this::convertirAOrderResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Obtener órdenes de un usuario específico
+    public List<OrderResponseDTO> obtenerOrdenesPorUsuario(String userEmail) {
+        Usuario usuario = usuarioRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException("Usuario con email " + userEmail + " no encontrado."));
+
+        List<Order> orders = orderRepository.findAll().stream()
+                .filter(order -> order.getUsuario() != null && order.getUsuario().getId().equals(usuario.getId()))
+                .collect(Collectors.toList());
+
         return orders.stream()
                 .map(this::convertirAOrderResponseDTO)
                 .collect(Collectors.toList());
