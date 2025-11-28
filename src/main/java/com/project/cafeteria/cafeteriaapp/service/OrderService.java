@@ -1,8 +1,11 @@
 package com.project.cafeteria.cafeteriaapp.service;
 
 import com.project.cafeteria.cafeteriaapp.dto.ItemOrderDTO;
+import com.project.cafeteria.cafeteriaapp.dto.OrderItemDTO;
+import com.project.cafeteria.cafeteriaapp.dto.OrderResponseDTO;
 import com.project.cafeteria.cafeteriaapp.entity.Cafe;
 import com.project.cafeteria.cafeteriaapp.entity.Order;
+import com.project.cafeteria.cafeteriaapp.entity.OrderItem;
 import com.project.cafeteria.cafeteriaapp.exceptions.NotFoundException;
 import com.project.cafeteria.cafeteriaapp.repository.CafeRepository;
 import com.project.cafeteria.cafeteriaapp.repository.OrderRepository;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -26,6 +30,7 @@ public class OrderService {
         System.out.println("Items recibidos: " + items.size());
 
         double totalPedido = 0.0;
+        Order nuevaOrden = new Order();
 
         for (ItemOrderDTO item : items) {
             System.out.println("Procesando item - CafeId: " + item.getCafeId() + ", Cantidad: " + item.getCantidad());
@@ -40,10 +45,15 @@ public class OrderService {
             System.out.println("Café encontrado: " + cafe.getNombre() + " - Precio: $" + cafe.getPrecio());
 
             totalPedido += cafe.getPrecio() * item.getCantidad();
+
+            // Crear el OrderItem y agregarlo a la orden
+            com.project.cafeteria.cafeteriaapp.entity.OrderItem orderItem =
+                new com.project.cafeteria.cafeteriaapp.entity.OrderItem(nuevaOrden, cafe, item.getCantidad());
+            nuevaOrden.addItem(orderItem);
         }
 
         System.out.println("Total calculado: $" + totalPedido);
-        Order nuevaOrden = new Order(totalPedido);
+        nuevaOrden.setTotal(totalPedido);
         Order ordenGuardada = orderRepository.save(nuevaOrden);
         System.out.println("Orden creada con ID: " + ordenGuardada.getId());
         System.out.println("=== ORDEN CREADA EXITOSAMENTE ===");
@@ -65,7 +75,32 @@ public class OrderService {
     }
 
     //obtencion de todas las ordenes del sistema
-    public List<Order> obtenerTodasLasOrdenes() {
-        return orderRepository.findAll();
+    public List<OrderResponseDTO> obtenerTodasLasOrdenes() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(this::convertirAOrderResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Método auxiliar para convertir Order a OrderResponseDTO
+    private OrderResponseDTO convertirAOrderResponseDTO(Order order) {
+        List<OrderItemDTO> itemsDTO = order.getItems().stream()
+                .map(item -> new OrderItemDTO(
+                        item.getCafe().getId(),
+                        item.getCafe().getNombre(),
+                        item.getCafe().getIngredientes(),
+                        item.getCafe().getPrecio(),
+                        item.getCantidad(),
+                        item.getSubtotal()
+                ))
+                .collect(Collectors.toList());
+
+        return new OrderResponseDTO(
+                order.getId(),
+                order.getTotal(),
+                order.getEstado(),
+                order.getFechaCreacion(),
+                itemsDTO
+        );
     }
 }

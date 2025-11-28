@@ -12,11 +12,14 @@ public class Cafe {
     private Long id;
     private String nombre;
     private double precio;
+    private String ingredientes;
+
     public Cafe() {}
 
-    public Cafe(String nombre, double precio) {
+    public Cafe(String nombre, double precio, String ingredientes) {
         this.nombre = nombre;
         this.precio = precio;
+        this.ingredientes = ingredientes;
     }
 
     // metodos (Get,Set) de la clase Cafe
@@ -38,5 +41,13 @@ public class Cafe {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public String getIngredientes() {
+        return ingredientes;
+    }
+
+    public void setIngredientes(String ingredientes) {
+        this.ingredientes = ingredientes;
     }
 }

@@ -1,11 +1,9 @@
 package com.project.cafeteria.cafeteriaapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -22,6 +20,10 @@ public class Order {
 
     // registra la fecha y hora del pedido
     private LocalDateTime fechaCreacion;
+
+    // relación con los items de la orden
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<OrderItem> items = new ArrayList<>();
 
     // constructo vacio requerido por JPA
     public Order() {
@@ -60,5 +62,17 @@ public class Order {
         return fechaCreacion;
     }
 
+    public List<OrderItem> getItems() {
+        return items;
+    }
 
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    // Método auxiliar para agregar un item a la orden
+    public void addItem(OrderItem item) {
+        items.add(item);
+        item.setOrder(this);
+    }
 }

@@ -25,11 +25,11 @@ public class CafeteriaAppApplication {
             if (cafeRepository.count() == 0) {
                 // objetos Cafe del menú inicial
                 List<Cafe> menuInicial = Arrays.asList(
-                        new Cafe("Espresso", 5000.00),
-                        new Cafe("Americano", 6000.00),
-                        new Cafe("Capuchino", 8500.00),
-                        new Cafe("Latte", 9000.00),
-                        new Cafe("Mocaccino", 10000.00)
+                        new Cafe("Espresso", 5000.00, "Café molido fino"),
+                        new Cafe("Americano", 6000.00, "Espresso, agua"),
+                        new Cafe("Cappuccino", 8500.00, "Espresso, leche, espuma de leche"),
+                        new Cafe("Latte", 9000.00, "Espresso, 2/3 más de leche"),
+                        new Cafe("Mocaccino", 10000.00, "Espresso, chocolate, leche, espuma de leche")
                 );
 
                 cafeRepository.saveAll(menuInicial);

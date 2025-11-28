@@ -61,39 +61,70 @@ function OrdersList() {
       {orders.map((order) => (
         <div
           key={order.id}
-          className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition"
+          className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition border-l-4 border-amber-500"
         >
-          <h3 className="font-bold text-lg text-amber-800 mb-2">Orden #{order.id}</h3>
-          <p><strong>Total:</strong> ${order.total.toFixed(2)}</p>
-          <p>
-            <strong>Estado:</strong>{" "}
-            <span
-              className={`px-2 py-1 rounded text-white text-sm ${
-                order.estado === "PENDIENTE"
-                  ? "bg-yellow-500"
-                  : order.estado === "EN PREPARACIÓN"
-                  ? "bg-blue-500"
-                  : "bg-green-600"
-              }`}
-            >
-              {order.estado}
-            </span>
-          </p>
-          <p className="text-gray-500 text-sm mb-4">
-            {new Date(order.fechaCreacion).toLocaleString()}
-          </p>
-          <div className="space-x-2">
+          <h3 className="font-bold text-lg text-amber-800 mb-3">☕ Orden #{order.id}</h3>
+
+          {/* Listado de items de la orden */}
+          {order.items && order.items.length > 0 && (
+            <div className="mb-4 border-t border-b border-gray-200 py-3">
+              <h4 className="font-semibold text-sm text-gray-700 mb-2">Items del pedido:</h4>
+              <div className="space-y-2">
+                {order.items.map((item, index) => (
+                  <div key={index} className="bg-amber-50 p-2 rounded text-sm">
+                    <div className="flex justify-between font-medium">
+                      <span>{item.cantidad}x {item.cafeNombre}</span>
+                      <span className="text-amber-700">${item.subtotal.toFixed(2)}</span>
+                    </div>
+                    {item.ingredientes && (
+                      <p className="text-xs text-gray-600 italic mt-1">
+                        🔸 {item.ingredientes}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mb-4 space-y-2">
+            <p className="flex justify-between">
+              <strong>Total:</strong>
+              <span className="text-amber-700 font-semibold">${order.total.toFixed(2)}</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <strong>Estado:</strong>{" "}
+              <span
+                className={`px-2 py-1 rounded text-white text-sm ${
+                  order.estado === "PENDIENTE"
+                    ? "bg-yellow-500"
+                    : order.estado === "EN PREPARACIÓN"
+                    ? "bg-blue-500"
+                    : "bg-green-600"
+                }`}
+              >
+                {order.estado}
+              </span>
+            </p>
+            <p className="text-gray-500 text-sm">
+              {new Date(order.fechaCreacion).toLocaleString()}
+            </p>
+          </div>
+
+          <div className="space-x-2 flex gap-2">
             <button
               onClick={() => cambiarEstado(order.id, "EN PREPARACIÓN")}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded transition text-sm"
+              disabled={order.estado === "LISTO"}
             >
               En preparación
             </button>
             <button
               onClick={() => cambiarEstado(order.id, "LISTO")}
-              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded transition text-sm"
+              disabled={order.estado === "LISTO"}
             >
-              Listo
+               Listo
             </button>
           </div>
         </div>

@@ -53,13 +53,24 @@ function Cart({ cart, onClear }) {
         <>
           <ul className="divide-y divide-amber-100">
             {cart.map((item) => (
-              <li key={item.id} className="py-2 flex justify-between items-center">
-                <span>
-                  {item.nombre} × {item.cantidad}
-                </span>
-                <span className="text-amber-700 font-semibold">
-                  ${(item.precio * item.cantidad).toFixed(2)}
-                </span>
+              <li key={item.id} className="py-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">
+                        {item.nombre} × {item.cantidad}
+                      </span>
+                      <span className="text-amber-700 font-semibold">
+                        ${(item.precio * item.cantidad).toFixed(2)}
+                      </span>
+                    </div>
+                    {item.ingredientes && (
+                      <p className="text-xs text-gray-500 italic mt-1">
+                        🍃 {item.ingredientes}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

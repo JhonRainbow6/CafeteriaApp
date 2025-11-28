@@ -1,6 +1,7 @@
 package com.project.cafeteria.cafeteriaapp.controller;
 
 import com.project.cafeteria.cafeteriaapp.dto.ItemOrderDTO;
+import com.project.cafeteria.cafeteriaapp.dto.OrderResponseDTO;
 import com.project.cafeteria.cafeteriaapp.entity.Order;
 import com.project.cafeteria.cafeteriaapp.service.OrderService;
 import jakarta.validation.Valid;
@@ -38,8 +39,8 @@ public class OrderController {
 
     // [ENDPOINT GERENTE/BARISTA] GET /api/orders: Obtiene listado de todas las órdenes
     @GetMapping
-    public ResponseEntity<List<Order>> obtenerTodasLasOrdenes() {
-        List<Order> ordenes = orderService.obtenerTodasLasOrdenes();
+    public ResponseEntity<List<OrderResponseDTO>> obtenerTodasLasOrdenes() {
+        List<OrderResponseDTO> ordenes = orderService.obtenerTodasLasOrdenes();
         return new ResponseEntity<>(ordenes, HttpStatus.OK);
     }
 

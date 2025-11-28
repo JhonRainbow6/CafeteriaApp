@@ -61,13 +61,13 @@ function RoleSelector() {
           onClick={() => handleSelect("cliente")}
           className="bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
         >
-          👩‍🎓 Entrar como Cliente
+          Entrar como Cliente
         </button>
         <button
           onClick={() => handleSelect("barista")}
           className="bg-gray-700 hover:bg-gray-800 text-white py-3 rounded-lg text-lg font-semibold shadow transition"
         >
-          👨‍🍳 Entrar como Barista
+          Entrar como Barista
         </button>
       </div>
     </div>

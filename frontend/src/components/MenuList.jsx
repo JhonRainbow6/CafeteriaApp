@@ -66,7 +66,12 @@ function MenuList({ onAddToCart }) {
               <h3 className="text-xl font-semibold text-amber-800">
                 {cafe.nombre}
               </h3>
-              <p className="text-gray-600 mb-3">${cafe.precio.toFixed(2)}</p>
+              <p className="text-gray-600 mb-2">${cafe.precio.toFixed(2)}</p>
+              {cafe.ingredientes && (
+                <p className="text-sm text-gray-500 italic mb-3">
+                  {cafe.ingredientes}
+                </p>
+              )}
               <button
                 onClick={() => onAddToCart(cafe)}
                 className="w-full bg-amber-700 hover:bg-amber-800 text-white py-2 rounded-lg font-semibold transition"
