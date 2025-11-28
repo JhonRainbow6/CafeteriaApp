@@ -22,22 +22,33 @@ public class OrderService {
     }
 
     public Order crearOrden(List<ItemOrderDTO> items) {
+        System.out.println("=== CREANDO NUEVA ORDEN ===");
+        System.out.println("Items recibidos: " + items.size());
+
         double totalPedido = 0.0;
 
         for (ItemOrderDTO item : items) {
+            System.out.println("Procesando item - CafeId: " + item.getCafeId() + ", Cantidad: " + item.getCantidad());
 
             Optional<Cafe> cafeOptional = cafeRepository.findById(item.getCafeId());
 
             if (cafeOptional.isEmpty()) {
+                System.err.println("ERROR: Café con ID " + item.getCafeId() + " no encontrado");
                 throw new NotFoundException("El café con ID " + item.getCafeId() + " no existe en el menú.");
             }
             Cafe cafe = cafeOptional.get();
+            System.out.println("Café encontrado: " + cafe.getNombre() + " - Precio: $" + cafe.getPrecio());
 
             totalPedido += cafe.getPrecio() * item.getCantidad();
         }
 
+        System.out.println("Total calculado: $" + totalPedido);
         Order nuevaOrden = new Order(totalPedido);
-        return orderRepository.save(nuevaOrden);
+        Order ordenGuardada = orderRepository.save(nuevaOrden);
+        System.out.println("Orden creada con ID: " + ordenGuardada.getId());
+        System.out.println("=== ORDEN CREADA EXITOSAMENTE ===");
+
+        return ordenGuardada;
     }
     //obtencion de una orden por su ID
     public Order GetOrderById(Long id) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../services/api";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
 
@@ -7,29 +7,37 @@ function OrdersList() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchOrders = () => {
-    axios
-      .get("http://localhost:8080/api/orders")
-      .then((res) => {
-        setOrders(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error al obtener órdenes:", err);
-        setLoading(false);
-      });
+  const fetchOrders = async () => {
+    try {
+      console.log("Cargando órdenes...");
+      const response = await apiClient.get("/orders");
+      console.log("Órdenes cargadas:", response.data);
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error al obtener órdenes:", error);
+      if (error.response?.status === 404) {
+        toast.error("Servicio de órdenes no encontrado.");
+      } else if (error.code === 'ERR_NETWORK') {
+        toast.error("Error de conexión con el servidor.");
+      } else {
+        toast.error("No se pudieron cargar las órdenes.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cambiarEstado = async (id, nuevoEstado) => {
     try {
-      await axios.put(`http://localhost:8080/api/orders/${id}/state`, nuevoEstado, {
+      console.log(`Cambiando estado de orden ${id} a ${nuevoEstado}`);
+      await apiClient.put(`/orders/${id}/state`, nuevoEstado, {
         headers: { "Content-Type": "application/json" },
       });
-      toast.success(`Estado cambiado a "${nuevoEstado}"`);
+      toast.success(`Estado cambiado a "${nuevoEstado}" ✅`);
       fetchOrders();
     } catch (err) {
+      console.error("Error al actualizar estado:", err);
       toast.error("Error al actualizar estado ❌");
-      console.error(err);
     }
   };
 
@@ -40,7 +48,16 @@ function OrdersList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div>
+      {/* Indicador de estado */}
+      <div className="bg-blue-50 p-4 rounded-lg mb-6">
+        <p className="text-blue-800">
+          📊 <strong>Total de órdenes:</strong> {orders.length}
+          {orders.length === 0 && " - No hay órdenes pendientes"}
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {orders.map((order) => (
         <div
           key={order.id}
@@ -81,6 +98,7 @@ function OrdersList() {
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }

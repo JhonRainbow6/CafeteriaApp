@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../services/api";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
 
@@ -10,21 +10,37 @@ function MenuList({ onAddToCart }) {
   // Cargar menú desde el backend
   const fetchMenu = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/menu");
+      console.log("Intentando cargar el menú...");
+      const response = await apiClient.get("/menu");
+      console.log("Menú cargado exitosamente:", response.data);
       setMenu(response.data);
     } catch (error) {
       console.error("Error al cargar el menú:", error);
-      toast.error("No se pudo obtener el menú del servidor.");
+      if (error.response?.status === 404) {
+        toast.error("Endpoint del menú no encontrado. Verifica que el backend esté ejecutándose.");
+      } else if (error.code === 'ERR_NETWORK') {
+        toast.error("No se pudo conectar al servidor. Verifica que el backend esté ejecutándose en el puerto 8080.");
+      } else {
+        toast.error("No se pudo obtener el menú del servidor.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log("MenuList montado, iniciando carga del menú");
     fetchMenu();
   }, []);
 
-  if (loading) return <Loader />;
+  useEffect(() => {
+    console.log("Estado del menú actualizado:", { menu, loading, count: menu.length });
+  }, [menu, loading]);
+
+  if (loading) {
+    console.log("MenuList mostrando loader...");
+    return <Loader />;
+  }
 
   return (
     <div>

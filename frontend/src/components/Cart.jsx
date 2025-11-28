@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import apiClient from "../services/api";
 import toast from "react-hot-toast";
 
 function Cart({ cart, onClear }) {
@@ -16,15 +16,31 @@ function Cart({ cart, onClear }) {
       cantidad: item.cantidad,
     }));
 
+    console.log("Enviando pedido:", orderItems);
+    console.log("Items del carrito:", cart);
+
     try {
-      const response = await axios.post("http://localhost:8080/api/orders", orderItems, {
-        headers: { "Content-Type": "application/json" },
-      });
-      toast.success(`Pedido #${response.data.id} creado con éxito.`);
+      const response = await apiClient.post("/orders", orderItems);
+      console.log("Pedido creado exitosamente:", response.data);
+      toast.success(`¡Pedido #${response.data.id} creado con éxito! 🎉`);
       onClear(); // vaciar carrito
     } catch (error) {
-      console.error("Error al enviar pedido:", error);
-      toast.error("No se pudo crear el pedido.");
+      console.error("Error detallado al enviar pedido:", {
+        error: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        orderItems
+      });
+
+      if (error.response?.status === 400) {
+        toast.error(`Error en el pedido: ${error.response.data}`);
+      } else if (error.response?.status === 404) {
+        toast.error("Servicio de pedidos no encontrado. Verifica que el backend esté ejecutándose.");
+      } else if (error.code === 'ERR_NETWORK') {
+        toast.error("Error de conexión. Verifica que el backend esté ejecutándose.");
+      } else {
+        toast.error("No se pudo crear el pedido. Inténtalo de nuevo.");
+      }
     }
   };
 
