@@ -36,7 +36,7 @@
 - Generación de token simple (formato: `token_{userId}_{timestamp}`)
 - Retorno de información del usuario autenticado (email, rol, token)
 
-**Nota de Seguridad**: Actualmente se usa un token simple. En producción se recomienda implementar JWT (JSON Web Tokens) para mayor seguridad.
+**Nota de Seguridad**: Actualmente se usa un token simple.
 
 #### Entidad Usuario
 **Campos**:
@@ -372,7 +372,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>
 │ email       │  │    │ total        │    │  │ nombre      │
 │ password    │  │    │ estado       │    │  │ precio      │
 │ rol         │  │    │ fechaCreacion│    │  │ ingredientes│
-└─────────────┘  │    │ usuario_id(FK)│   │  │ imagenUrl   │
+└─────────────┘  │    │usuario_id(FK)│    │  │ imagenUrl   │
                  │    └──────────────┘    │  └─────────────┘
                  │            │           │
                  └────────────┤           │
